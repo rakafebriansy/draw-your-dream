@@ -36,14 +36,11 @@ export default function RootLayout() {
   return (
     <ClerkProvider publishableKey={publishableKey}>
       <ClerkLoaded>
-        <Stack>
-          <Stack.Screen name="index" />
-          <Stack.Screen
-            name="login/index"
-            options={{
+        <Stack screenOptions={{
               headerShown: false,
-            }}
-          />
+            }}>
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="login/index" />
         </Stack>
       </ClerkLoaded>
     </ClerkProvider>

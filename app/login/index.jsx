@@ -1,12 +1,38 @@
-import { Text } from "react-native";
-import { Dimensions, Image, View } from "react-native";
+import React from 'react'
 import Colors from "../../constants/Colors";
 import FormButton from "../../components/buttons/FormButton";
+import { Text, Dimensions, Image, View } from 'react-native'
+import { Link } from 'expo-router'
+import * as WebBrowser from 'expo-web-browser'
+import { useOAuth } from '@clerk/clerk-expo'
+import * as Linking from 'expo-linking'
 
 const { width, height } = Dimensions.get("window");
 const imageHeight = (3 * height) / 4;
 
 const LoginScreen = ({}) => {
+
+  useWarmUpBrowser()
+
+  const { startOAuthFlow } = useOAuth({ strategy: 'oauth_google' })
+
+  const onPress = React.useCallback(async () => {
+    try {
+      const { createdSessionId, signIn, signUp, setActive } = await startOAuthFlow({
+        redirectUrl: Linking.createURL('/dashboard', { scheme: 'myapp' }),
+      })
+
+      if (createdSessionId) {
+        // setActive!({ session: createdSessionId })
+      } else {
+        // Use signIn or signUp for next steps such as MFA
+      }
+    } catch (err) {
+      console.error('OAuth error', err)
+    }
+  }, [])
+
+
   return (
     <View>
       <Image
@@ -47,7 +73,7 @@ const LoginScreen = ({}) => {
             Create an AI Art in Just one Clik
           </Text>
         </View>
-        <FormButton>Continue</FormButton>
+        <FormButton callback={onPress}>Continue</FormButton>
         <Text style={{ 
           textAlign: 'center',
           fontSize: 12,
@@ -59,3 +85,14 @@ const LoginScreen = ({}) => {
 };
 
 export default LoginScreen;
+
+export const useWarmUpBrowser = () => {
+  React.useEffect(() => {
+    void WebBrowser.warmUpAsync()
+    return () => {
+      void WebBrowser.coolDownAsync()
+    }
+  }, [])
+}
+
+WebBrowser.maybeCompleteAuthSession()

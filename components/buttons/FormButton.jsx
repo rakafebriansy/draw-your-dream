@@ -1,10 +1,10 @@
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import Colors from "../../constants/Colors";
 import { StyleSheet } from "react-native";
 
-const FormButton = ({ children }) => {
+const FormButton = ({ children, callback }) => {
     return (
-        <View
+        <TouchableOpacity onPress={callback}
           style={styles.button}
         >
           <Text
@@ -12,7 +12,7 @@ const FormButton = ({ children }) => {
           >
             {children}
           </Text>
-        </View>
+        </TouchableOpacity>
     );
 };
 

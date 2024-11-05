@@ -23,6 +23,7 @@ const LoginScreen = ({}) => {
 
       if (createdSessionId) {
         setActive({ session: createdSessionId })
+        console.log('logged!');
       } else {
         // Use signIn or signUp for next steps such as MFA
       }

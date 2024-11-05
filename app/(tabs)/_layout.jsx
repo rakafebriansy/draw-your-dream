@@ -19,18 +19,24 @@ const TabLayout = ({  }) => {
         try {
             const response = await GlobalApi.getUserInfo(user?.primaryEmailAddress?.emailAddress);
             if(response.data.data.length != 0) {
-                setUserDetail(response.data.data);
+                setUserDetail(response.data.data[0]);
                 return;
             }
+
             const data = {
                 userEmail: user?.primaryEmailAddress?.emailAddress,
                 userName: user?.fullName
             };
 
             const result = await GlobalApi.createNewUser(data);
-            setUserDetail(result.data.data)
+
+            if(!(Array.isArray(result) && result.length > 0)) {
+                throw new Error('Does\'nt return an array');
+            }
+
+            setUserDetail(result.data.data[0]);
         } catch (error) {
-            console.log('Error: ' + error.response)
+            console.log('Error: ' + error)
         }
     };
 
